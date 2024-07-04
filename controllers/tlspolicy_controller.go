@@ -198,7 +198,7 @@ func (r *TLSPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 
 	gatewayEventMapper := mappers.NewGatewayEventMapper(mappers.WithLogger(r.Logger().WithName("gatewayEventMapper")), mappers.WithClient(mgr.GetClient()))
 
-	return ctrl.NewControllerManagedBy(mgr).
+	return r.Complete(ctrl.NewControllerManagedBy(mgr).
 		For(&v1alpha1.TLSPolicy{}).
 		Watches(
 			&gatewayapiv1.Gateway{},
@@ -206,7 +206,7 @@ func (r *TLSPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 				return gatewayEventMapper.MapToPolicy(ctx, object, &v1alpha1.TLSPolicy{})
 			}),
 		).
-		Complete(r)
+		Build(r))
 }
 
 func (r *TLSPolicyReconciler) FetchValidGateway(ctx context.Context, key client.ObjectKey) (*gatewayapiv1.Gateway, error) {

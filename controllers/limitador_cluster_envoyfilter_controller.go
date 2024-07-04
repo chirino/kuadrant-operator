@@ -184,11 +184,11 @@ func (r *LimitadorClusterEnvoyFilterReconciler) SetupWithManager(mgr ctrl.Manage
 		return nil
 	}
 
-	return ctrl.NewControllerManagedBy(mgr).
+	return r.Complete(ctrl.NewControllerManagedBy(mgr).
 		// Limitador cluster EnvoyFilter controller only cares about
 		// the annotation having references to RLP's
 		// kuadrant.io/ratelimitpolicies
 		For(&gatewayapiv1.Gateway{}, builder.WithPredicates(predicate.AnnotationChangedPredicate{})).
 		Owns(&istioclientnetworkingv1alpha3.EnvoyFilter{}).
-		Complete(r)
+		Build(r))
 }

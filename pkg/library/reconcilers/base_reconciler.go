@@ -47,6 +47,9 @@ type BaseReconciler struct {
 	apiClientReader client.Reader
 	logger          logr.Logger
 	recorder        record.EventRecorder
+	// IsWatched returns true if the object is watched by the controller.
+	// This function is nil unless running in an integration test.
+	IsWatched func(o client.Object) bool
 }
 
 // blank assignment to verify that BaseReconciler implements reconcile.Reconciler
@@ -66,12 +69,6 @@ func NewBaseReconciler(
 
 func (b *BaseReconciler) Reconcile(context.Context, ctrl.Request) (ctrl.Result, error) {
 	return reconcile.Result{}, nil
-}
-
-// Client returns a split client that reads objects from
-// the cache and writes to the Kubernetes APIServer
-func (b *BaseReconciler) Client() client.Client {
-	return b.client
 }
 
 // APIClientReader return a client that directly reads objects

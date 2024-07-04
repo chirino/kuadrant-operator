@@ -238,7 +238,7 @@ func (r *RateLimitPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	httpRouteEventMapper := mappers.NewHTTPRouteEventMapper(mappers.WithLogger(r.Logger().WithName("httpRouteEventMapper")), mappers.WithClient(mgr.GetClient()))
 	gatewayEventMapper := mappers.NewGatewayEventMapper(mappers.WithLogger(r.Logger().WithName("gatewayEventMapper")), mappers.WithClient(mgr.GetClient()))
 
-	return ctrl.NewControllerManagedBy(mgr).
+	return r.Complete(ctrl.NewControllerManagedBy(mgr).
 		For(&kuadrantv1beta2.RateLimitPolicy{}).
 		Watches(
 			&gatewayapiv1.HTTPRoute{},
@@ -254,5 +254,5 @@ func (r *RateLimitPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 				return gatewayEventMapper.MapToPolicy(ctx, object, &kuadrantv1beta2.RateLimitPolicy{})
 			}),
 		).
-		Complete(r)
+		Build(r))
 }

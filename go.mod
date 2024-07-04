@@ -183,3 +183,6 @@ require (
 replace maistra.io/istio-operator => github.com/maistra/istio-operator v0.0.0-20231214211859-76e404c8df41
 
 replace github.com/imdario/mergo => dario.cat/mergo v0.3.5
+
+// public-new-controller branch
+replace sigs.k8s.io/controller-runtime => github.com/chirino/controller-runtime v0.0.0-20240704113007-1b3a21fe86f5

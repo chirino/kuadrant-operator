@@ -190,7 +190,7 @@ func (r *DNSPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	gatewayEventMapper := mappers.NewGatewayEventMapper(mappers.WithLogger(r.Logger().WithName("gatewayEventMapper")), mappers.WithClient(mgr.GetClient()))
 
 	r.dnsHelper = dnsHelper{Client: r.Client()}
-	ctrlr := ctrl.NewControllerManagedBy(mgr).
+	return r.Complete(ctrl.NewControllerManagedBy(mgr).
 		For(&v1alpha1.DNSPolicy{}).
 		Owns(&kuadrantdnsv1alpha1.DNSRecord{}).
 		Watches(
@@ -198,6 +198,6 @@ func (r *DNSPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 			handler.EnqueueRequestsFromMapFunc(func(ctx context.Context, object client.Object) []reconcile.Request {
 				return gatewayEventMapper.MapToPolicy(ctx, object, &v1alpha1.DNSPolicy{})
 			}),
-		)
-	return ctrlr.Complete(r)
+		).
+		Build(r))
 }

@@ -311,7 +311,7 @@ func (r *RateLimitingIstioWASMPluginReconciler) SetupWithManager(mgr ctrl.Manage
 		mappers.WithClient(r.Client()),
 	)
 
-	return ctrl.NewControllerManagedBy(mgr).
+	return r.Complete(ctrl.NewControllerManagedBy(mgr).
 		// Rate limiting WASMPlugin controller only cares about
 		// Gateway API Gateway
 		// Gateway API HTTPRoutes
@@ -329,5 +329,5 @@ func (r *RateLimitingIstioWASMPluginReconciler) SetupWithManager(mgr ctrl.Manage
 			&kuadrantv1beta2.RateLimitPolicy{},
 			handler.EnqueueRequestsFromMapFunc(rlpToParentGatewaysEventMapper.Map),
 		).
-		Complete(r)
+		Build(r))
 }

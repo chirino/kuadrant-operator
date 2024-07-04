@@ -368,7 +368,7 @@ func (r *TargetStatusReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		},
 	}
 
-	return ctrl.NewControllerManagedBy(mgr).
+	return r.Complete(ctrl.NewControllerManagedBy(mgr).
 		For(&gatewayapiv1.Gateway{}).
 		Watches(
 			&gatewayapiv1.HTTPRoute{},
@@ -394,7 +394,8 @@ func (r *TargetStatusReconciler) SetupWithManager(mgr ctrl.Manager) error {
 			handler.EnqueueRequestsFromMapFunc(policyToParentGatewaysEventMapper.Map),
 			builder.WithPredicates(policyStatusChangedPredicate),
 		).
-		Complete(r)
+		Build(r))
+
 }
 
 func buildPolicyAffectedCondition(policy kuadrantgatewayapi.Policy) metav1.Condition {

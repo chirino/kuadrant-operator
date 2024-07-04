@@ -293,7 +293,7 @@ func (r *RateLimitPolicyEnforcedStatusReconciler) SetupWithManager(mgr ctrl.Mana
 		},
 	}
 
-	return ctrl.NewControllerManagedBy(mgr).
+	return r.Complete(ctrl.NewControllerManagedBy(mgr).
 		For(&gatewayapiv1.Gateway{}).
 		Watches(
 			&gatewayapiv1.HTTPRoute{},
@@ -305,5 +305,5 @@ func (r *RateLimitPolicyEnforcedStatusReconciler) SetupWithManager(mgr ctrl.Mana
 			builder.WithPredicates(policyStatusChangedPredicate),
 		).
 		Watches(&limitadorv1alpha1.Limitador{}, limitadorStatusToParentGatewayEventMapper).
-		Complete(r)
+		Build(r))
 }

@@ -161,7 +161,7 @@ func (r *GatewayKuadrantReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		mappers.WithClient(r.Client()),
 	)
 
-	return ctrl.NewControllerManagedBy(mgr).
+	return r.Complete(ctrl.NewControllerManagedBy(mgr).
 		// Gateway Kuadrant controller only cares about the annotations
 		For(&gatewayapiv1.Gateway{}, builder.WithPredicates(predicate.AnnotationChangedPredicate{})).
 		// Watch for any kuadrant CR being created or deleted
@@ -175,5 +175,5 @@ func (r *GatewayKuadrantReconciler) SetupWithManager(mgr ctrl.Manager) error {
 				},
 			}),
 		).
-		Complete(r)
+		Build(r))
 }

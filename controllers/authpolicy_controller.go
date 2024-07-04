@@ -273,7 +273,7 @@ func (r *AuthPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	httpRouteEventMapper := mappers.NewHTTPRouteEventMapper(mappers.WithLogger(r.Logger().WithName("httpRouteEventMapper")), mappers.WithClient(mgr.GetClient()))
 	gatewayEventMapper := mappers.NewGatewayEventMapper(mappers.WithLogger(r.Logger().WithName("gatewayEventMapper")), mappers.WithClient(mgr.GetClient()))
 
-	return ctrl.NewControllerManagedBy(mgr).
+	return r.Complete(ctrl.NewControllerManagedBy(mgr).
 		For(&api.AuthPolicy{}).
 		Owns(&authorinoapi.AuthConfig{}).
 		Watches(
@@ -287,5 +287,5 @@ func (r *AuthPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 				return gatewayEventMapper.MapToPolicy(ctx, object, &api.AuthPolicy{})
 			}),
 		).
-		Complete(r)
+		Build(r))
 }
